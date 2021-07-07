@@ -7,7 +7,7 @@ use unicode_segmentation::UnicodeSegmentation;
 mod error;
 
 /// just scan from first to last
-pub fn longest_common_prefix<'s>(strs: &'s Vec<String>) -> String {
+pub fn longest_common_prefix(strs: &[&str]) -> String {
     if strs.is_empty() {
         return "".to_string();
     }
@@ -27,7 +27,7 @@ pub fn longest_common_prefix<'s>(strs: &'s Vec<String>) -> String {
 
 /// just scan from first to last too
 /// just reverse
-pub fn longest_common_subfix<'s>(strs: &'s Vec<String>) -> String {
+pub fn longest_common_subfix(strs: &[&str]) -> String {
     if strs.is_empty() {
         return "".to_string();
     }
@@ -49,19 +49,14 @@ pub fn longest_common_subfix<'s>(strs: &'s Vec<String>) -> String {
     first.graphemes(true).skip(count - len).collect()
 }
 
-pub fn gather_from_at_least_2(input: &Vec<String>, diff_mark: &str) -> Result<Regex> {
+pub fn gather_regex_from_at_least_2(input: &[&str], diff_mark: &str) -> Result<Regex> {
     // need at least 2 for gather regex
-    if input.len() < 1 {
+    if input.len() < 2 {
         return Err(Error::NoEnoughInput);
     }
-    let prefix = longest_common_prefix(&input);
-    let subfix = longest_common_subfix(&input);
-    let pattern = format!(
-        "{}(?P<{}>.*){}",
-        escape(&prefix),
-        diff_mark,
-        escape(&subfix)
-    );
+    let prefix = longest_common_prefix(input);
+    let subfix = longest_common_subfix(input);
+    let pattern = format!("{}{}{}", escape(&prefix), diff_mark, escape(&subfix));
 
     Ok(Regex::new(&pattern).expect("should always success"))
 }
@@ -73,7 +68,6 @@ mod test {
     #[test]
     fn longest_common_prefix_test() {
         let inputs = vec!["aaab", "aaacb", "aaeb", "aaeeb"];
-        let inputs = inputs.into_iter().map(ToString::to_string).collect();
         let res = longest_common_prefix(&inputs).len();
         assert_eq!(res, 2);
     }
@@ -81,7 +75,7 @@ mod test {
     #[test]
     fn longest_common_subfix_test() {
         let inputs = vec!["aaab", "aaacb", "aaeb", "aaeeb"];
-        let inputs = inputs.into_iter().map(ToString::to_string).collect();
+
         let res = longest_common_subfix(&inputs).len();
         assert_eq!(res, 1);
     }
@@ -89,7 +83,6 @@ mod test {
     #[test]
     fn longest_common_prefix_test_cjk() {
         let inputs = vec!["你好", "你不好", "你好", "你你你好"];
-        let inputs = inputs.into_iter().map(ToString::to_string).collect();
         let res = longest_common_prefix(&inputs);
         assert_eq!(res, "你");
     }
@@ -97,20 +90,19 @@ mod test {
     #[test]
     fn longest_common_subfix_test_cjk() {
         let inputs = vec!["你好", "你不好", "你好", "你你你好"];
-        let inputs = inputs.into_iter().map(ToString::to_string).collect();
         let res = longest_common_subfix(&inputs);
         assert_eq!(res, "好");
     }
 
     #[test]
     fn gather_from_at_least_2_test() {
+        let mark = "(?P<ep>.*)";
         let inputs = vec![
             "ひぐらしのなく頃に 業 1.mp4",
             "ひぐらしのなく頃に 業 2.mp4",
             "ひぐらしのなく頃に 業 3.mp4",
         ];
-        let inputs = inputs.into_iter().map(ToString::to_string).collect();
-        let res = gather_from_at_least_2(&inputs, "sp").unwrap();
-        assert_eq!(res.as_str(), "ひぐらしのなく頃に 業 (?P<sp>.*)\\.mp4");
+        let res = gather_regex_from_at_least_2(&inputs, mark).unwrap();
+        assert_eq!(res.as_str(), "ひぐらしのなく頃に 業 (?P<ep>.*)\\.mp4");
     }
 }
