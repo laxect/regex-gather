@@ -71,6 +71,7 @@ pub fn gather_regex(input: &[&str], diff_mark: &str, ext_num: bool) -> Result<Re
 
 /// gather pattern from input filename.
 /// need at least 2 for gather pattern.
+/// use a escape function.
 pub fn gather_pattern_with_escape<F: Fn(&str) -> String>(
     input: &[&str],
     diff_mark: &str,
