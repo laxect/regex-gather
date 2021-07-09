@@ -4,6 +4,8 @@ use thiserror::Error;
 pub enum Error {
     #[error("no enough input provided")]
     NoEnoughInput,
+    #[error("no number found")]
+    NoNumFound,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
