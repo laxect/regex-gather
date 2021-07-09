@@ -8,7 +8,7 @@ pub use utils::Predicate;
 mod error;
 mod utils;
 
-/// just scan from first to last
+/// just scan from first to last.
 fn longest_common_prefix(strs: &[&str]) -> String {
     if strs.is_empty() {
         return "".to_string();
@@ -27,8 +27,8 @@ fn longest_common_prefix(strs: &[&str]) -> String {
     first.graphemes(true).take(len).collect()
 }
 
-/// just scan from first to last too
-/// just reverse
+/// just scan from first to last too.
+/// just reverse.
 fn longest_common_subfix(strs: &[&str]) -> String {
     if strs.is_empty() {
         return "".to_string();
@@ -52,8 +52,8 @@ fn longest_common_subfix(strs: &[&str]) -> String {
 }
 
 /// gather pattern from input filename.
-/// need at least 2 for gather regex
-pub fn gather_regex_from_at_least_2(input: &[&str], diff_mark: &str, ext_num: bool) -> Result<Regex> {
+/// need at least 2 for gather regex.
+pub fn gather_regex(input: &[&str], diff_mark: &str, ext_num: bool) -> Result<Regex> {
     // need at least 2 for gather regex
     if input.len() < 2 {
         return Err(Error::NoEnoughInput);
@@ -199,7 +199,7 @@ mod test {
             "ひぐらしのなく頃に 業 02.mp4",
             "ひぐらしのなく頃に 業 03.mp4",
         ];
-        let res = gather_regex_from_at_least_2(&inputs, mark, true).unwrap();
+        let res = gather_regex(&inputs, mark, true).unwrap();
         assert_eq!(res.as_str(), "ひぐらしのなく頃に 業 (?P<ep>.*)\\.mp4");
     }
 

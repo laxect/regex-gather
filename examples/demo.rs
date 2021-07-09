@@ -10,7 +10,7 @@ fn main() {
     println!("input:\n  {:?}", &input);
     println!(
         "out:\n  {}",
-        regex_gather::gather_regex_from_at_least_2(&input, "(?P<ep>\\d+)", true).unwrap()
+        regex_gather::gather_regex(&input, "(?P<ep>\\d+)", true).unwrap()
     );
     println!("");
 
